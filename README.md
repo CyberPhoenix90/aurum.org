@@ -13,8 +13,8 @@ First install dependencies
 
 Then build
 
-> npm run build
+> \$ npm run build
 
 Then host
 
-> npm run host
+> \$ npm run host
