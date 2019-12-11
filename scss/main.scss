@@ -1,0 +1,23 @@
+.icon-block {
+	padding: 0 15px;
+
+	.material-icons {
+		font-size: inherit;
+	}
+}
+.page {
+	font-size: 17px;
+}
+
+.title {
+	display: flex;
+	justify-content: center;
+
+	.brand-logo {
+		margin: 2.4rem 0 1.28rem 0;
+		img {
+			height: 80px;
+			margin-right: 20px;
+		}
+	}
+}

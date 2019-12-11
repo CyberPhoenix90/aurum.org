@@ -1,0 +1,50 @@
+{
+	"name": "aurumorg",
+	"version": "0.0.8",
+	"description": "Official website for aurum.js",
+	"private": true,
+	"scripts": {
+		"build": "webpack",
+		"watch": "webpack -w",
+		"test": "jest",
+		"host": "http-server -c-1 -o"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/CyberPhoenix90/aurum"
+	},
+	"keywords": [
+		"web-components",
+		"webcomponents",
+		"DOM",
+		"rendering"
+	],
+	"author": "Joao Santos (CyberPhoenix)",
+	"license": "MIT",
+	"devDependencies": {
+		"@types/chai": "^4.2.5",
+		"@types/jest": "^24.0.23",
+		"babel-loader": "^8.0.6",
+		"chai": "^4.2.0",
+		"css-loader": "^3.2.0",
+		"http-server": "^0.11.1",
+		"jest": "^24.9.0",
+		"prettier": "^1.19.1",
+		"sass": "^1.23.7",
+		"sass-loader": "^8.0.0",
+		"style-loader": "^1.0.0",
+		"ts-jest": "^24.1.0",
+		"ts-loader": "^6.2.1",
+		"typescript": "^3.7.2",
+		"webpack": "^4.41.2",
+		"webpack-bundle-analyzer": "^3.6.0",
+		"webpack-cli": "^3.3.10"
+	},
+	"dependencies": {
+		"@babel/standalone": "^7.7.4",
+		"aurumjs": "0.2.12",
+		"markdown": "^0.5.0",
+		"materialize-css": "^1.0.0-rc.2",
+		"monaco-editor": "^0.18.1"
+	}
+}
