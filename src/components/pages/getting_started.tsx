@@ -152,7 +152,7 @@ export function GettingStarted() {
 			<header style="flex:0 0 350px;">
 				<div class="sidenav sidenav-fixed" style="width:350px">
 					<input maxLength="20" style="padding-left:10px" placeholder="Search..." inputValueSource={inputSource}></input>
-					<Switch state={visibleCourses.length}>
+					<Switch state={visibleCourses.length.debounce(0)}>
 						<template ref={0} generator={() => <div>No results for {inputSource}</div>}></template>
 						<template
 							generator={() => (
