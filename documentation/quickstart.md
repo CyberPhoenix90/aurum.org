@@ -4,7 +4,7 @@ Aurumjs is a DOM rendering library inspired by react and angular.
 
 Install:
 
-> npm install aurumjs
+> $ npm install aurumjs
 
 To use Aurum you need to compile JSX or TSX using babel or the typescript compiler.
 

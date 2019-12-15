@@ -1,5 +1,5 @@
 import { Aurum, ArrayDataSource, DataSource, FilteredArrayView, Switch, AurumRouter, Custom } from 'aurumjs';
-import { QuickStart } from './quickstart';
+import { DocumentationPage } from './documentation_page';
 
 export interface Course {
 	name: string;
@@ -84,26 +84,6 @@ const courses = new ArrayDataSource<Course>([
 		])
 	},
 	{
-		name: 'Templates',
-		sections: new FilteredArrayView([
-			{
-				prefix: '1. ',
-				href: 'lists',
-				name: 'Creating lists'
-			},
-			{
-				prefix: '2. ',
-				href: 'switches',
-				name: 'Creating switches'
-			},
-			{
-				prefix: '3. ',
-				href: 'customcomponents',
-				name: 'Using templates in components'
-			}
-		])
-	},
-	{
 		name: 'Components',
 		sections: new FilteredArrayView([
 			{
@@ -133,6 +113,11 @@ const courses = new ArrayDataSource<Course>([
 		sections: new FilteredArrayView([
 			{
 				prefix: '1. ',
+				href: 'switches',
+				name: 'Branching in HTML'
+			},
+			{
+				prefix: '2. ',
 				href: 'suspense',
 				name: 'Suspense'
 			}
@@ -186,8 +171,11 @@ export function GettingStarted() {
 				<div class="row">
 					<div class="col s12 m8 xl7">
 						<AurumRouter>
-							<template ref="/getting_started/coreideas" generator={() => <div>Core ideas</div>}></template>
-							<template generator={() => <QuickStart></QuickStart>}></template>
+							<template
+								ref="/getting_started/coreideas"
+								generator={() => <DocumentationPage title="Core ideas" url="/documentation/core_ideas.md"></DocumentationPage>}
+							></template>
+							<template generator={() => <DocumentationPage title="" url="/documentation/quickstart.md"></DocumentationPage>}></template>
 						</AurumRouter>
 					</div>
 				</div>
