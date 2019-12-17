@@ -38,7 +38,7 @@ interface DocumentationNode {
 	children: DocumentationNode[];
 }
 
-export type Markup = Array<string | AurumElement | Markup>;
+export type Markup = string | AurumElement | Array<string | AurumElement | Markup>;
 
 export function DocumentationPage() {
 	return (
@@ -129,6 +129,7 @@ function renderRootNode(node: DocumentationNode, nodeById: Map<number, Documenta
 			<div class="documentation-sections">
 				{node.children?.map((c) => {
 					switch (c.kind) {
+						case 64:
 						case 512:
 						case 2048:
 							return renderFunction(c, nodeById);
@@ -150,7 +151,7 @@ function renderRootNode(node: DocumentationNode, nodeById: Map<number, Documenta
 }
 
 function isInternal(node: DocumentationNode) {
-	return !!node?.comment?.tags?.some((t) => t.tag === 'internal');
+	return !!node?.comment?.tags?.some((t) => t.tag === 'internal') || node.name.startsWith('__');
 }
 
 function renderMetadata(node: DocumentationNode): AurumElement {
@@ -172,6 +173,14 @@ function renderFunction(node: DocumentationNode, nodeById: Map<number, Documenta
 	);
 }
 
+function renderFunctionInline(node: DocumentationNode, nodeById: Map<number, DocumentationNode>): AurumElement {
+	return <span>{getFullSignature(node.signatures[0], nodeById)}</span>;
+}
+
+function renderGetterAccessorInline(node: DocumentationNode, nodeById: Map<number, DocumentationNode>): AurumElement {
+	return <span>get {getFullProperty(node, nodeById)}</span>;
+}
+
 function renderGetterAccessor(node: DocumentationNode, nodeById: Map<number, DocumentationNode>): AurumElement {
 	return (
 		<div>
@@ -179,6 +188,10 @@ function renderGetterAccessor(node: DocumentationNode, nodeById: Map<number, Doc
 			<div>{renderJsDoc(node)}</div>
 		</div>
 	);
+}
+
+function renderPropertyInline(node: DocumentationNode, nodeById: Map<number, DocumentationNode>): AurumElement {
+	return <span>{getFullProperty(node, nodeById)}</span>;
 }
 
 function renderProperty(node: DocumentationNode, nodeById: Map<number, DocumentationNode>): AurumElement {
@@ -230,9 +243,37 @@ function getFullProperty(node: DocumentationNode, nodeById: Map<number, Document
 	return [property];
 }
 
+function renderNodeInline(node: DocumentationNode, nodeById: Map<number, DocumentationNode>): Markup {
+	switch (node.kind) {
+		case 64:
+		case 512:
+		case 2048:
+			return renderFunctionInline(node, nodeById);
+		case 1024:
+			return renderPropertyInline(node, nodeById);
+		case 262144:
+			return renderGetterAccessorInline(node, nodeById);
+		default:
+			return (
+				<div>
+					Unknown node kind {node.kind} {node.kindString}
+				</div>
+			);
+	}
+}
+
 function typeNodeToMarkup(node: DocumentationTypeNode | DocumentationNodeReference, nodeById: Map<number, DocumentationNode>): Markup {
 	if (node.type === 'reflection') {
-		return getFullSignature((node as DocumentationTypeNode).declaration.signatures[0], nodeById);
+		const declaration = (node as DocumentationTypeNode).declaration;
+		if (declaration.signatures) {
+			return getFullSignature((node as DocumentationTypeNode).declaration.signatures[0], nodeById);
+		} else {
+			if (declaration.kind === 65536) {
+				return ['{', declaration.children.map((p) => renderNodeInline(p, nodeById)), '}'];
+			} else {
+				return ['any'];
+			}
+		}
 	} else if (node.type === 'typeParameter') {
 		return [node.name];
 	} else if (node.type === 'array') {
@@ -258,7 +299,7 @@ function getFullSignature(node: DocumentationNode, nodeById: Map<number, Documen
 			if (!first) {
 				signature.push(', ');
 			}
-			signature.push(...param);
+			signature.push(param);
 			first = false;
 		}
 	}
@@ -266,9 +307,9 @@ function getFullSignature(node: DocumentationNode, nodeById: Map<number, Documen
 
 	if (node.type) {
 		if (node.name === '__call' || node.name === '__type') {
-			signature.push(' => ', ...typeNodeToMarkup(node.type, nodeById));
+			signature.push(' => ', typeNodeToMarkup(node.type, nodeById));
 		} else {
-			signature.push(': ', ...typeNodeToMarkup(node.type, nodeById));
+			signature.push(': ', typeNodeToMarkup(node.type, nodeById));
 		}
 	}
 
