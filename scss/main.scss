@@ -25,3 +25,16 @@
 		}
 	}
 }
+
+.documentation-sections {
+	h6 {
+		font-weight: bold;
+	}
+	> div {
+		padding:1px 20px 7px 20px
+	}
+
+	> div:nth-child(odd) {
+		background-color:#efefef;
+	}
+}

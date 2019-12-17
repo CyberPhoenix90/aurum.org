@@ -5,6 +5,7 @@ import { Examples } from './components/examples';
 import { MainTitle } from './components/main_title';
 import { Navbar } from './components/navbar';
 import { GettingStarted } from './components/pages/getting_started';
+import { DocumentationPage } from './components/pages/documentation_page';
 declare const M: any;
 
 //@ts-ignore
@@ -14,6 +15,7 @@ Aurum.attach(
 	<div onAttach={() => setTimeout(() => M.AutoInit())}>
 		<Navbar></Navbar>
 		<AurumRouter>
+			<template ref="/documentation" generator={() => <DocumentationPage></DocumentationPage>}></template>
 			<template ref="/getting_started" generator={() => <GettingStarted></GettingStarted>}></template>
 			<template
 				generator={() => (

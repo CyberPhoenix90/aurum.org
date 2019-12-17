@@ -3,7 +3,7 @@
         "outDir": "dist",
         "sourceMap": true,
         "module": "esnext",
-        "target": "esnext",
+        "target": "es2017",
         "jsxFactory": "Aurum.factory",
         "jsx": "react",
         "moduleResolution": "node"
