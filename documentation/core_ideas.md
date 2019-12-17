@@ -29,7 +29,7 @@ This works for array data sources as well
 
 ```
 import {ArrayDataSource, Aurum} from 'aurumjs'
-const myList = new ArrayDataSource(['task 1','task2','task3])
+const myList = new ArrayDataSource(['task 1','task 2','task 3'])
 
 Aurum.attach(
   <ul>{myList.map((text) => <li>{text}</li>)}</ul>, 

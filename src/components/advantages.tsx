@@ -7,7 +7,7 @@ export function Advantages() {
 				<div class="row">
 					<div class="col s12 m4">
 						<div class="icon-block">
-							<h2 class="center light-blue-text">
+							<h2 class="center orange-text">
 								<i class="material-icons">flash_on</i>
 							</h2>
 							<h5 class="center">Lightning fast</h5>
@@ -21,7 +21,7 @@ export function Advantages() {
 
 					<div class="col s12 m4">
 						<div class="icon-block">
-							<h2 class="center light-blue-text">
+							<h2 class="center orange-text">
 								<i class="material-icons">query_builder</i>
 							</h2>
 							<h5 class="center">Small learning curve</h5>
@@ -32,7 +32,7 @@ export function Advantages() {
 
 					<div class="col s12 m4">
 						<div class="icon-block">
-							<h2 class="center light-blue-text">
+							<h2 class="center orange-text">
 								<i class="material-icons">settings</i>
 							</h2>
 							<h5 class="center">Write less do more</h5>

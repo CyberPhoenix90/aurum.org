@@ -15,7 +15,7 @@ export function MainTitle() {
 					<h5 class="header col s12 light">Fast and concise declarative DOM rendering library for javascript</h5>
 				</div>
 				<div class="row center">
-					<a href="#/getting_started" id="download-button" class="btn-large waves-effect waves-light orange">
+					<a href="#/getting_started" id="download-button" class="btn-large waves-effect waves-light grey darken-4">
 						Get Started
 					</a>
 				</div>

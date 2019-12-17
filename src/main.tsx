@@ -2,7 +2,6 @@ import { Aurum, AurumRouter } from 'aurumjs';
 import '../scss/main.scss';
 import { Advantages } from './components/advantages';
 import { Examples } from './components/examples';
-import { Footer } from './components/footer';
 import { MainTitle } from './components/main_title';
 import { Navbar } from './components/navbar';
 import { GettingStarted } from './components/pages/getting_started';
@@ -21,8 +20,9 @@ Aurum.attach(
 					<div>
 						<MainTitle></MainTitle>
 						<Advantages></Advantages>
-						<Examples></Examples>
-						<Footer></Footer>
+						<div class="container">
+							<Examples></Examples>
+						</div>
 					</div>
 				)}
 			></template>

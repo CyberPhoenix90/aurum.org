@@ -3,14 +3,35 @@ declare const Babel: any;
 declare const r: any;
 
 export interface ExampleModel {
+	title: string;
 	description: string;
 	code: DataSource<string>;
 }
 
 const exampleData: ExampleModel[] = [
 	{
-		description: `Simple Timer. Updates every second to show how many seconds passed since the execution began`,
-		code: new DataSource(`import {DataSource} from 'aurumjs'
+		title: 'Hello world',
+		description: `Basic Hello world example`,
+		code: new DataSource(`return function() {
+	return <div>Hello world</div>
+}`)
+	},
+	{
+		title: 'Rendering lists',
+		description: `List of items synchronized to the data`,
+		code: new DataSource(`import { ArrayDataSource } from 'aurumjs'
+const items = new ArrayDataSource(['item one', 'item two'])
+
+return function() {
+	return <div>{items.map(i => <p>{i}</p>)}
+	<button onClick={() => items.push('More')}>Add more</button>
+	</div>
+}`)
+	},
+	{
+		title: 'Simple timer',
+		description: `Updates every second to show how many seconds passed since the execution began`,
+		code: new DataSource(`import { DataSource } from 'aurumjs'
 
 return function() {
 const seconds = new DataSource(0);
@@ -20,6 +41,114 @@ const seconds = new DataSource(0);
 	},1000)
 
 	return <div>{seconds}</div>
+}`)
+	},
+	{
+		title: 'Conditional rendering',
+		description: 'Using data sources to render different branches conditionally',
+		code: new DataSource(`
+		import { DataSource } from 'aurumjs'
+
+return function() {
+const tabContent = new DataSource(<span>hello Tab 1</span>);
+
+	return (<div>
+		<button onClick={() => tabContent.update(<span>hello Tab 1</span>)}>Tab 1</button>
+		<button onClick={() => tabContent.update(<span>hello Tab 2</span>)}>Tab 2</button>
+		<button onClick={() => tabContent.update(<span>hello Tab 3</span>)}>Tab 3</button>
+		{tabContent}
+		</div>)
+}`)
+	},
+	{
+		title: 'TODO App',
+		description: `Features:
+		Double click to edit.
+		Drag and drop of items with mouse.
+		Enter to add a new item.
+		Delete items.
+		Filter by done.
+		Mark as done.`,
+		code: new DataSource(`import { DataSource, ArrayDataSource, Switch } from 'aurumjs'
+
+return function Todo() {
+	const todoSource = new ArrayDataSource();
+	const filteredView = todoSource.filter(() => true);
+	const editing = new DataSource();
+	let id = 0;
+	let draggedNode;
+
+	return (
+		<div>
+			<div>
+				<input onKeyDown={(e) => {
+						if (e.keyCode === 13 && e.target.value) {
+							todoSource.push({id: (id++).toString(), done: new DataSource(false), text: new DataSource(e.target.value)});
+							e.target.value = '';
+						}
+					}}
+					placeholder="What needs to be done?"
+				></input>
+			</div>
+			<ul>
+				{filteredView.map((model) => {
+						let item;
+						return (
+							<li
+								onAttach={(i) => {
+									item = i;
+									item.model = model;
+								}}
+								draggable="true"
+								onDragStart={() => (draggedNode = item)}
+								onDragEnter={(e) => {
+									if (draggedNode.node.parentElement === item.node.parentElement) {
+										todoSource.swapItems(item.model, draggedNode.model);
+									}
+								}}
+								style={model.done.map((done) => (done ? 'color: red;text-decoration: line-through;display: flex;justify-content: space-between;' : 'display: flex;justify-content: space-between;'))}
+							>
+								<Switch state={editing}>
+									<template
+										ref={model.id}
+										generator={() => (
+											<input
+												onBlur={() => editing.update(undefined)}
+												onAttach={(input) => input.node.focus()}
+												initialValue={model.text.value}
+												onKeyDown={(e) => {
+													if (e.keyCode === 13) {
+														model.text.update(e.target.value);
+														editing.update(undefined);
+													} else if (e.keyCode === 27) {
+														editing.update(undefined);
+													}
+												}}
+											/>
+										)}
+									></template>
+									<template ref="default" generator={() => <div onDblClick={(e) => editing.update(model.id)}>{model.text}</div>}></template>
+								</Switch>
+								<span>
+									<button onClick={() => model.done.update(!model.done.value)}>
+										{model.done.map((done) => (done ? 'Mark as not done' : 'Mark as done'))}
+									</button>
+									<button onClick={() => {
+											if (editing.value === model.id) {
+												editing.update(undefined);
+											}
+											todoSource.remove(model);
+										}}>X</button>
+								</span>
+							</li>
+						);
+					})}
+			</ul>
+			<button onClick={() => filteredView.updateFilter(() => true)}>All</button>
+			<button onClick={() => filteredView.updateFilter((todo) => todo.done.value)}>Done only</button>
+			<button onClick={() => filteredView.updateFilter((todo) => !todo.done.value)}>Not done only</button>
+		</div>
+	);
 }`)
 	}
 ];
@@ -64,48 +193,47 @@ function replaceImport(code: string): string {
 export function Examples() {
 	const token = new CancellationToken();
 	return (
-		<div class="container">
-			<div class="section">
-				<div class="row">
-					<ul repeatModel={exampleData}>
-						<Template
-							generator={(data: ExampleModel) => (
-								<li>
-									<div class="col s12 m3">{data.description}</div>
-									<div class="col s8 m6">
-										<div
-											style="height:300px;border:1px solid #ccc"
-											onAttach={(d) => {
-												r(['vs/editor/editor.main'], async function() {
-													const text = await (await fetch('data/aurum.d.ts')).text();
-													//@ts-ignore
-													monaco.languages.typescript.javascriptDefaults.addExtraLib([text].join('\n'), 'aurum.d.ts');
+		<div class="section">
+			<div class="row">
+				<ul>
+					{exampleData.map((data: ExampleModel) => (
+						<li class="row">
+							<div class="col s12 m3">
+								<h5>{data.title}</h5>
+								<div>{data.description}</div>
+							</div>
+							<div class="col s8 m6">
+								<div
+									style="height:300px;border:1px solid #ccc"
+									onAttach={(d) => {
+										r(['vs/editor/editor.main'], async function() {
+											const text = await (await fetch('data/aurum.d.ts')).text();
 
-													//@ts-ignore
-													const editor = monaco.editor.create(d.node as HTMLDivElement, {
-														value: data.code.value,
-														minimap: {
-															enabled: false
-														},
-														theme: 'vs-dark',
-														lineNumbers: 'off',
+											//@ts-ignore
+											monaco.languages.typescript.javascriptDefaults.addExtraLib([text].join('\n'), 'aurum.d.ts');
 
-														language: 'javascript'
-													});
-													editor.onKeyUp(() => data.code.update(editor.getValue()));
-												});
-											}}
-										></div>
-									</div>
-									<div onDispose={() => token.cancel()} class="col s4 m3">
-										<div>Result</div>
-										{evaluate(data.code, token)}
-									</div>
-								</li>
-							)}
-						></Template>
-					</ul>
-				</div>
+											//@ts-ignore
+											const editor = monaco.editor.create(d.node as HTMLDivElement, {
+												value: data.code.value,
+												minimap: {
+													enabled: false
+												},
+												theme: 'vs-dark',
+												language: 'javascript'
+											});
+
+											editor.onKeyUp(() => data.code.update(editor.getValue()));
+										});
+									}}
+								></div>
+							</div>
+							<div onDispose={() => token.cancel()} class="col s4 m3">
+								<div>Result</div>
+								{evaluate(data.code, token)}
+							</div>
+						</li>
+					))}
+				</ul>
 			</div>
 		</div>
 	);

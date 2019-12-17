@@ -2,12 +2,22 @@ import { Aurum } from 'aurumjs';
 
 export function Navbar() {
 	return (
-		<nav class="light-blue lighten-1" role="navigation">
+		<nav class="grey darken-4" role="navigation">
 			<div class="nav-wrapper container">
 				<ul class="right hide-on-med-and-down">
 					<li>
 						<div class="title">
 							<a href="#">Home</a>
+						</div>
+					</li>
+					<li>
+						<div class="title">
+							<a href="#/getting_started">Getting started</a>
+						</div>
+					</li>
+					<li>
+						<div class="title">
+							<a href="#/documentation">Documentation</a>
 						</div>
 					</li>
 					<li>
@@ -23,6 +33,15 @@ export function Navbar() {
 				</ul>
 
 				<ul id="nav-mobile" class="sidenav">
+					<li>
+						<a href="#">Home</a>
+					</li>
+					<li>
+						<a href="#/getting_started">Getting started</a>
+					</li>
+					<li>
+						<a href="#/documentation">Documentation</a>
+					</li>
 					<li>
 						<a target="_blank" href="https://github.com/CyberPhoenix90/aurum">
 							Github

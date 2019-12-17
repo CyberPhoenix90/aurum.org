@@ -1,5 +1,6 @@
 import { Aurum, ArrayDataSource, DataSource, FilteredArrayView, Switch, AurumRouter, Custom } from 'aurumjs';
 import { DocumentationPage } from './documentation_page';
+import { ExamplePage } from './example_page';
 
 export interface Course {
 	name: string;
@@ -63,21 +64,16 @@ const courses = new ArrayDataSource<Course>([
 		sections: new FilteredArrayView([
 			{
 				prefix: '1. ',
-				href: 'coreconcept',
-				name: 'Core concept'
-			},
-			{
-				prefix: '2. ',
 				href: 'datasource',
 				name: 'DataSource'
 			},
 			{
-				prefix: '3. ',
+				prefix: '2. ',
 				href: 'arraydatasource',
 				name: 'ArrayDataSource'
 			},
 			{
-				prefix: '4. ',
+				prefix: '3. ',
 				href: 'objectdatasource',
 				name: 'ObjectDataSource'
 			}
@@ -98,11 +94,16 @@ const courses = new ArrayDataSource<Course>([
 			},
 			{
 				prefix: '3. ',
+				href: 'transclude',
+				name: 'Transclusion'
+			},
+			{
+				prefix: '4. ',
 				href: 'react',
 				name: 'Compatibility with react'
 			},
 			{
-				prefix: '4. ',
+				prefix: '5. ',
 				href: 'angular',
 				name: 'Compatibility with angular'
 			}
@@ -141,26 +142,22 @@ export function GettingStarted() {
 						<template ref={0} generator={() => <div>No results for {inputSource}</div>}></template>
 						<template
 							generator={() => (
-								<ul repeatModel={visibleCourses}>
-									<template
-										generator={(course: Course) => (
-											<li>
-												<h6 style="margin-left:30px; font-weight:bold;">{course.name}</h6>
-												<ol style="list-style:none" repeatModel={course.sections}>
-													<template
-														generator={(section: CourseSection) => (
-															<li>
-																<a href={'#/getting_started/' + section.href}>
-																	{section.prefix}
-																	{section.name}
-																</a>
-															</li>
-														)}
-													></template>
-												</ol>
-											</li>
-										)}
-									></template>
+								<ul>
+									{visibleCourses.map((course: Course) => (
+										<li>
+											<h6 style="margin-left:30px; font-weight:bold;">{course.name}</h6>
+											<ol style="list-style:none">
+												{course.sections.map((section: CourseSection) => (
+													<li>
+														<a href={'#/getting_started/' + section.href}>
+															{section.prefix}
+															{section.name}
+														</a>
+													</li>
+												))}
+											</ol>
+										</li>
+									))}
 								</ul>
 							)}
 						></template>
@@ -169,13 +166,16 @@ export function GettingStarted() {
 			</header>
 			<div class="container" style="width:100%">
 				<div class="row">
-					<div class="col s12 m8 xl7">
+					<div class="col s12 m12 xl12">
 						<AurumRouter>
 							<template
 								ref="/getting_started/coreideas"
 								generator={() => <DocumentationPage title="Core ideas" url="/documentation/core_ideas.md"></DocumentationPage>}
 							></template>
-							<template generator={() => <DocumentationPage title="" url="/documentation/quickstart.md"></DocumentationPage>}></template>
+							<template ref="/getting_started/examples" generator={() => <ExamplePage></ExamplePage>}></template>
+							<template
+								generator={() => <DocumentationPage title="Quickstart" url="/documentation/quickstart.md"></DocumentationPage>}
+							></template>
 						</AurumRouter>
 					</div>
 				</div>
