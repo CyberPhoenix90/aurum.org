@@ -61,6 +61,43 @@ const tabContent = new DataSource(<span>hello Tab 1</span>);
 }`)
 	},
 	{
+		title: 'Binding promises',
+		description: 'Aurum is quite liberal with what you can bind to HTML. This is what happens when you bind promises',
+		code: new DataSource(`import { DataSource } from 'aurumjs'
+
+function sleep(time) {
+	return new Promise((resolve) => {
+		setTimeout(resolve,time);
+	})
+}
+
+async function AsyncComponent({delay}){
+	await sleep(delay);
+	return <div>I'm ready</div>
+}
+
+return function() {
+	const content = new DataSource([
+		<AsyncComponent delay={1000}></AsyncComponent>,
+		<AsyncComponent delay={2000}></AsyncComponent>,
+		<AsyncComponent delay={3000}></AsyncComponent>,
+		<AsyncComponent delay={4000}></AsyncComponent>,
+		<AsyncComponent delay={5000}></AsyncComponent>
+	]);
+
+	return (<div>
+		{content}
+		<button onClick={() => content.update([
+			<AsyncComponent delay={1000}></AsyncComponent>,
+			<AsyncComponent delay={2000}></AsyncComponent>,
+			<AsyncComponent delay={3000}></AsyncComponent>,
+			<AsyncComponent delay={4000}></AsyncComponent>,
+			<AsyncComponent delay={5000}></AsyncComponent>
+		])}>Replay</button>
+		</div>)
+}`)
+	},
+	{
 		title: 'TODO App',
 		description: `Features:
 		Double click to edit.
