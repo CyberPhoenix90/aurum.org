@@ -12,14 +12,12 @@ export function MarkdownPage(props: DocumentationPageProps): AurumElement {
 			<h2>{props.title}</h2>
 			<br></br>
 			<div>
-				<Suspense
-					loader={() =>
-						fetch(props.url)
-							.then((s) => s.text())
-							.then((result) => <Markdown>{result}</Markdown>)
-					}
-				>
-					Loading...
+				<Suspense fallback="Loading...">
+					{fetch(props.url)
+						.then((s) => s.text())
+						.then((result) => (
+							<Markdown>{result}</Markdown>
+						))}
 				</Suspense>
 			</div>
 		</div>

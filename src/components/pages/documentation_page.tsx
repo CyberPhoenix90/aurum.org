@@ -42,58 +42,56 @@ export type Markup = string | AurumElement | Array<string | AurumElement | Marku
 
 export function DocumentationPage() {
 	return (
-		<div>
-			<Suspense
-				loader={async () => {
-					const docsModel = await fetch('/node_modules/aurumjs/docs/docs.json').then((s) => s.json());
-					const nodes: DocumentationNode[] = docsModel.children
-						.flatMap((p) => {
-							if (p.kind === 1) {
-								return p.children;
-							} else {
-								return [p];
-							}
-						})
-						.filter((p) => p && !isInternal(p))
-						.sort((a, b) => a.name.localeCompare(b.name));
+		<Suspense fallback="Loading...">
+			<Documentation></Documentation>
+		</Suspense>
+	);
+}
 
-					const model: Category[] = nodes.map<Category>((p) => ({
-						name: p.name,
-						sections: [
-							{
-								href: p.name,
-								name: getFullNodeName(p)
-							}
-						]
-					}));
+async function Documentation() {
+	const docsModel = await fetch('/node_modules/aurumjs/docs/docs.json').then((s) => s.json());
+	const nodes: DocumentationNode[] = docsModel.children
+		.flatMap((p) => {
+			if (p.kind === 1) {
+				return p.children;
+			} else {
+				return [p];
+			}
+		})
+		.filter((p) => p && !isInternal(p))
+		.sort((a, b) => a.name.localeCompare(b.name));
 
-					const nodeIdMap: Map<number, DocumentationNode> = new Map();
-					const nodeNameMap: Map<string, DocumentationNode> = new Map();
+	const model: Category[] = nodes.map<Category>((p) => ({
+		name: p.name,
+		sections: [
+			{
+				href: p.name,
+				name: getFullNodeName(p)
+			}
+		]
+	}));
 
-					for (const node of nodes) {
-						nodeIdMap.set(node.id, node);
-						nodeNameMap.set(node.name, node);
-					}
+	const nodeIdMap: Map<number, DocumentationNode> = new Map();
+	const nodeNameMap: Map<string, DocumentationNode> = new Map();
 
-					const pageContent = new DataSource(renderRootNode(getSelectedNode(nodeNameMap), nodeIdMap));
-					window.addEventListener('hashchange', () => {
-						pageContent.update(renderRootNode(getSelectedNode(nodeNameMap), nodeIdMap));
-					});
+	for (const node of nodes) {
+		nodeIdMap.set(node.id, node);
+		nodeNameMap.set(node.name, node);
+	}
 
-					return (
-						<div style="display:flex">
-							<ContentList baseUrl="#/documentation/" flat={true} content={model}></ContentList>
-							<div class="container" style="width:100%">
-								<div class="row">
-									<div class="col s12 m12 xl12">{pageContent}</div>
-								</div>
-							</div>
-						</div>
-					);
-				}}
-			>
-				Loading...
-			</Suspense>
+	const pageContent = new DataSource(renderRootNode(getSelectedNode(nodeNameMap), nodeIdMap));
+	window.addEventListener('hashchange', () => {
+		pageContent.update(renderRootNode(getSelectedNode(nodeNameMap), nodeIdMap));
+	});
+
+	return (
+		<div style="display:flex">
+			<ContentList baseUrl="#/documentation/" flat={true} content={model}></ContentList>
+			<div class="container" style="width:100%">
+				<div class="row">
+					<div class="col s12 m12 xl12">{pageContent}</div>
+				</div>
+			</div>
 		</div>
 	);
 }
