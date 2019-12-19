@@ -1,6 +1,7 @@
 import { Aurum, DataSource, Switch, FilteredArrayView, ArrayDataSource } from 'aurumjs';
 
 export interface ContentListProps {
+	selectedNode?: DataSource<string>;
 	baseUrl?: string;
 	flat?: boolean;
 	initialFilter?: string;
@@ -13,6 +14,7 @@ export interface Category {
 }
 
 export interface ContentSection {
+	id: string;
 	name: string;
 	prefix?: string;
 	href: string;
@@ -24,6 +26,7 @@ interface ObservableCategory {
 }
 
 export function ContentList(props: ContentListProps) {
+	props.selectedNode = props.selectedNode ?? new DataSource();
 	const inputSource = new DataSource(props.initialFilter ?? '');
 	const visibleCategories: FilteredArrayView<ObservableCategory> = new ArrayDataSource(
 		props.content.map((p) => ({
@@ -38,7 +41,7 @@ export function ContentList(props: ContentListProps) {
 
 	return (
 		<header style="flex:0 0 350px;">
-			<div class="sidenav sidenav-fixed" style="width:350px">
+			<div class="sidenav sidenav-fixed content-list" style="width:350px">
 				<input maxLength="20" style="padding-left:10px" placeholder="Search..." inputValueSource={inputSource}></input>
 				<Switch state={visibleCategories.length.debounce(0)}>
 					<template ref={0} generator={() => <div>No results for {inputSource}</div>}></template>
@@ -46,7 +49,11 @@ export function ContentList(props: ContentListProps) {
 						generator={() => (
 							<ul>
 								{visibleCategories.map((category: ObservableCategory) => (
-									<li>{props.flat ? renderFlatCategory(category, props.baseUrl) : renderCategory(category, props.baseUrl)}</li>
+									<li>
+										{props.flat
+											? renderFlatCategory(category, props.baseUrl, props.selectedNode)
+											: renderCategory(category, props.baseUrl, props.selectedNode)}
+									</li>
 								))}
 							</ul>
 						)}
@@ -57,13 +64,17 @@ export function ContentList(props: ContentListProps) {
 	);
 }
 
-function renderFlatCategory(category: ObservableCategory, baseUrl: string = '') {
+function renderFlatCategory(category: ObservableCategory, baseUrl: string = '', selectedNode: DataSource<string>) {
 	return (
 		<div>
 			<ul style="list-style:none">
 				{category.sections.map((section: ContentSection) => (
 					<li>
-						<a href={baseUrl + section.href}>
+						<a
+							onClick={() => selectedNode.update(section.id)}
+							class={selectedNode.map<string>((v) => (v === section.id ? 'selected' : ''))}
+							href={baseUrl + section.href}
+						>
 							{section.prefix}
 							{section.name}
 						</a>
@@ -73,14 +84,18 @@ function renderFlatCategory(category: ObservableCategory, baseUrl: string = '') 
 		</div>
 	);
 }
-function renderCategory(category: ObservableCategory, baseUrl: string = '') {
+function renderCategory(category: ObservableCategory, baseUrl: string = '', selectedNode: DataSource<string>) {
 	return (
 		<div>
 			<h6 style="margin-left:30px; font-weight:bold;">{category.name}</h6>
 			<ol style="list-style:none">
 				{category.sections.map((section: ContentSection) => (
 					<li>
-						<a href={baseUrl + section.href}>
+						<a
+							onClick={() => selectedNode.update(section.id)}
+							class={selectedNode.map<string>((v) => (v === section.id ? 'selected' : ''))}
+							href={baseUrl + section.href}
+						>
 							{section.prefix}
 							{section.name}
 						</a>

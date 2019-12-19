@@ -10,22 +10,26 @@ const courses: Category[] = [
 			{
 				prefix: '1. ',
 				href: '',
-				name: 'Quickstart'
+				name: 'Quickstart',
+				id: ''
 			},
 			{
 				prefix: '2. ',
 				href: 'coreideas',
-				name: 'Core ideas'
+				name: 'Core ideas',
+				id: 'coreideas'
 			},
 			{
 				prefix: '3. ',
 				href: 'why',
-				name: 'Why Aurum'
+				name: 'Why Aurum',
+				id: 'why'
 			},
 			{
 				prefix: '4. ',
 				href: 'examples',
-				name: 'Examples'
+				name: 'Examples',
+				id: 'examples'
 			}
 		]
 	},
@@ -35,17 +39,20 @@ const courses: Category[] = [
 			{
 				prefix: '1. ',
 				href: 'syntax',
-				name: 'Syntax'
+				name: 'Syntax',
+				id: 'syntax'
 			},
 			{
 				prefix: '2. ',
 				href: 'typescript',
-				name: 'Typescript'
+				name: 'Typescript',
+				id: 'typescript'
 			},
 			{
 				prefix: '3. ',
 				href: 'babel',
-				name: 'Babel'
+				name: 'Babel',
+				id: 'babel'
 			}
 		]
 	},
@@ -55,17 +62,20 @@ const courses: Category[] = [
 			{
 				prefix: '1. ',
 				href: 'datasource',
-				name: 'DataSource'
+				name: 'DataSource',
+				id: 'datasource'
 			},
 			{
 				prefix: '2. ',
 				href: 'arraydatasource',
-				name: 'ArrayDataSource'
+				name: 'ArrayDataSource',
+				id: 'arraydatasource'
 			},
 			{
 				prefix: '3. ',
 				href: 'objectdatasource',
-				name: 'ObjectDataSource'
+				name: 'ObjectDataSource',
+				id: 'objectdatasource'
 			}
 		]
 	},
@@ -75,27 +85,20 @@ const courses: Category[] = [
 			{
 				prefix: '1. ',
 				href: 'functional',
-				name: 'Functional'
+				name: 'Functional',
+				id: 'functional'
 			},
 			{
 				prefix: '2. ',
 				href: 'classes',
-				name: 'Class based'
+				name: 'Class based',
+				id: 'classes'
 			},
 			{
 				prefix: '3. ',
 				href: 'transclude',
-				name: 'Transclusion'
-			},
-			{
-				prefix: '4. ',
-				href: 'react',
-				name: 'Compatibility with react'
-			},
-			{
-				prefix: '5. ',
-				href: 'angular',
-				name: 'Compatibility with angular'
+				name: 'Transclusion',
+				id: 'transclude'
 			}
 		]
 	},
@@ -105,21 +108,28 @@ const courses: Category[] = [
 			{
 				prefix: '1. ',
 				href: 'switches',
-				name: 'Branching in HTML'
+				name: 'Branching in HTML',
+				id: 'switches'
 			},
 			{
 				prefix: '2. ',
 				href: 'suspense',
-				name: 'Suspense'
+				name: 'Suspense',
+				id: 'suspense'
 			}
 		]
 	}
 ];
 
 export function GettingStarted() {
+	const selectedNode = new DataSource<string>(getSelectedPage());
+	window.addEventListener('hashchange', () => {
+		selectedNode.update(getSelectedPage());
+	});
+
 	return (
 		<div style="display:flex">
-			<ContentList baseUrl="#/getting_started/" content={courses}></ContentList>
+			<ContentList selectedNode={selectedNode} baseUrl="#/getting_started/" content={courses}></ContentList>
 			<div class="container" style="width:100%">
 				<div class="row">
 					<div class="col s12 m12 xl12">
@@ -144,4 +154,13 @@ export function GettingStarted() {
 			</div>
 		</div>
 	);
+}
+
+function getSelectedPage() {
+	const hash = location.hash.substring(1);
+	if (hash.startsWith('/getting_started/')) {
+		return hash.substring('/getting_started/'.length);
+	} else {
+		return '';
+	}
 }

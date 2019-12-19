@@ -1,4 +1,4 @@
-import { Aurum, Suspense, AurumElement, Data, DataSource } from 'aurumjs';
+import { Aurum, AurumElement, DataSource, Suspense } from 'aurumjs';
 import { Category, ContentList } from '../content_list';
 
 interface DocumentationNodeReference {
@@ -66,6 +66,7 @@ async function Documentation() {
 		sections: [
 			{
 				href: p.name,
+				id: p.id.toString(),
 				name: getFullNodeName(p)
 			}
 		]
@@ -80,13 +81,15 @@ async function Documentation() {
 	}
 
 	const pageContent = new DataSource(renderRootNode(getSelectedNode(nodeNameMap), nodeIdMap));
+	const selectedNode = new DataSource<string>(getSelectedNode(nodeNameMap).id.toString());
 	window.addEventListener('hashchange', () => {
 		pageContent.update(renderRootNode(getSelectedNode(nodeNameMap), nodeIdMap));
+		selectedNode.update(getSelectedNode(nodeNameMap).id.toString());
 	});
 
 	return (
 		<div style="display:flex">
-			<ContentList baseUrl="#/documentation/" flat={true} content={model}></ContentList>
+			<ContentList selectedNode={selectedNode} baseUrl="#/documentation/" flat={true} content={model}></ContentList>
 			<div class="container" style="width:100%">
 				<div class="row">
 					<div class="col s12 m12 xl12">{pageContent}</div>
