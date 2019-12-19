@@ -146,6 +146,14 @@ export function GettingStarted() {
 								ref="/getting_started/syntax"
 								generator={() => <MarkdownPage title="Syntax" url="/documentation/syntax.md"></MarkdownPage>}
 							></template>
+							<template
+								ref="/getting_started/typescript"
+								generator={() => <MarkdownPage title="Using Aurum with typescript" url="/documentation/typescript.md"></MarkdownPage>}
+							></template>
+							<template
+								ref="/getting_started/babel"
+								generator={() => <MarkdownPage title="Using Aurum with babel" url="/documentation/babel.md"></MarkdownPage>}
+							></template>
 							<template ref="/getting_started/examples" generator={() => <ExamplePage></ExamplePage>}></template>
 							<template generator={() => <MarkdownPage title="Quickstart" url="/documentation/quickstart.md"></MarkdownPage>}></template>
 						</AurumRouter>
