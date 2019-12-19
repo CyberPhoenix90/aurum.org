@@ -105,7 +105,7 @@ function getSelectedNode(nodes: Map<string, DocumentationNode>): DocumentationNo
 	if (nodes.has(nodeName)) {
 		return nodes.get(nodeName);
 	} else {
-		return undefined;
+		return nodes.get('Aurum');
 	}
 }
 

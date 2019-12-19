@@ -19,8 +19,8 @@ const courses: Category[] = [
 			},
 			{
 				prefix: '3. ',
-				href: 'benchmarks',
-				name: 'Benchmarks'
+				href: 'why',
+				name: 'Why Aurum'
 			},
 			{
 				prefix: '4. ',
@@ -50,7 +50,7 @@ const courses: Category[] = [
 		]
 	},
 	{
-		name: 'Data management',
+		name: 'State management',
 		sections: [
 			{
 				prefix: '1. ',
@@ -127,6 +127,14 @@ export function GettingStarted() {
 							<template
 								ref="/getting_started/coreideas"
 								generator={() => <MarkdownPage title="Core ideas" url="/documentation/core_ideas.md"></MarkdownPage>}
+							></template>
+							<template
+								ref="/getting_started/why"
+								generator={() => <MarkdownPage title="Why Aurum" url="/documentation/why.md"></MarkdownPage>}
+							></template>
+							<template
+								ref="/getting_started/syntax"
+								generator={() => <MarkdownPage title="Syntax" url="/documentation/syntax.md"></MarkdownPage>}
 							></template>
 							<template ref="/getting_started/examples" generator={() => <ExamplePage></ExamplePage>}></template>
 							<template generator={() => <MarkdownPage title="Quickstart" url="/documentation/quickstart.md"></MarkdownPage>}></template>

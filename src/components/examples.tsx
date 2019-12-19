@@ -46,8 +46,7 @@ const seconds = new DataSource(0);
 	{
 		title: 'Conditional rendering',
 		description: 'Using data sources to render different branches conditionally',
-		code: new DataSource(`
-		import { DataSource } from 'aurumjs'
+		code: new DataSource(`import { DataSource } from 'aurumjs'
 
 return function() {
 const tabContent = new DataSource(<span>hello Tab 1</span>);
