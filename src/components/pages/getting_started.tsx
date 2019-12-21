@@ -1,7 +1,7 @@
-import { Aurum, ArrayDataSource, DataSource, FilteredArrayView, Switch, AurumRouter, Custom } from 'aurumjs';
-import { MarkdownPage } from './markdown_page';
-import { ExamplePage } from './example_page';
+import { Aurum, AurumRouter, DataSource, DefaultRoute, Route } from 'aurumjs';
 import { Category, ContentList } from '../content_list';
+import { ExamplePage } from './example_page';
+import { MarkdownPage } from './markdown_page';
 
 const courses: Category[] = [
 	{
@@ -134,28 +134,33 @@ export function GettingStarted() {
 				<div class="row">
 					<div class="col s12 m12 xl12">
 						<AurumRouter>
-							<template
-								ref="/getting_started/coreideas"
-								generator={() => <MarkdownPage title="Core ideas" url="/documentation/core_ideas.md"></MarkdownPage>}
-							></template>
-							<template
-								ref="/getting_started/why"
-								generator={() => <MarkdownPage title="Why Aurum" url="/documentation/why.md"></MarkdownPage>}
-							></template>
-							<template
-								ref="/getting_started/syntax"
-								generator={() => <MarkdownPage title="Syntax" url="/documentation/syntax.md"></MarkdownPage>}
-							></template>
-							<template
-								ref="/getting_started/typescript"
-								generator={() => <MarkdownPage title="Using Aurum with typescript" url="/documentation/typescript.md"></MarkdownPage>}
-							></template>
-							<template
-								ref="/getting_started/babel"
-								generator={() => <MarkdownPage title="Using Aurum with babel" url="/documentation/babel.md"></MarkdownPage>}
-							></template>
-							<template ref="/getting_started/examples" generator={() => <ExamplePage></ExamplePage>}></template>
-							<template generator={() => <MarkdownPage title="Quickstart" url="/documentation/quickstart.md"></MarkdownPage>}></template>
+							<Route href="/getting_started/coreideas">
+								<MarkdownPage title="Core ideas" url="/documentation/core_ideas.md"></MarkdownPage>
+							</Route>
+							<Route href="/getting_started/why">
+								<MarkdownPage title="Why Aurum" url="/documentation/why.md"></MarkdownPage>
+							</Route>
+							<Route href="/getting_started/syntax">
+								<MarkdownPage title="Syntax" url="/documentation/syntax.md"></MarkdownPage>
+							</Route>
+							<Route href="/getting_started/classes">
+								<MarkdownPage title="Class based components" url="/documentation/classes.md"></MarkdownPage>
+							</Route>
+							<Route href="/getting_started/functional">
+								<MarkdownPage title="Function based components" url="/documentation/functional.md"></MarkdownPage>
+							</Route>
+							<Route href="/getting_started/typescript">
+								<MarkdownPage title="Using Aurum with typescript" url="/documentation/typescript.md"></MarkdownPage>
+							</Route>
+							<Route href="/getting_started/babel">
+								<MarkdownPage title="Using Aurum with babel" url="/documentation/babel.md"></MarkdownPage>
+							</Route>
+							<Route href="/getting_started/examples">
+								<ExamplePage></ExamplePage>
+							</Route>
+							<DefaultRoute>
+								<MarkdownPage title="Quickstart" url="/documentation/quickstart.md"></MarkdownPage>
+							</DefaultRoute>
 						</AurumRouter>
 					</div>
 				</div>

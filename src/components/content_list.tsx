@@ -1,4 +1,4 @@
-import { Aurum, DataSource, Switch, FilteredArrayView, ArrayDataSource } from 'aurumjs';
+import { ArrayDataSource, Aurum, DataSource, DefaultSwitchCase, FilteredArrayView, Switch, SwitchCase } from 'aurumjs';
 
 export interface ContentListProps {
 	selectedNode?: DataSource<string>;
@@ -44,20 +44,20 @@ export function ContentList(props: ContentListProps) {
 			<div class="sidenav sidenav-fixed content-list" style="width:350px">
 				<input maxLength="20" style="padding-left:10px" placeholder="Search..." inputValueSource={inputSource}></input>
 				<Switch state={visibleCategories.length.debounce(0)}>
-					<template ref={0} generator={() => <div>No results for {inputSource}</div>}></template>
-					<template
-						generator={() => (
-							<ul>
-								{visibleCategories.map((category: ObservableCategory) => (
-									<li>
-										{props.flat
-											? renderFlatCategory(category, props.baseUrl, props.selectedNode)
-											: renderCategory(category, props.baseUrl, props.selectedNode)}
-									</li>
-								))}
-							</ul>
-						)}
-					></template>
+					<SwitchCase when={0}>
+						<div>No results for {inputSource}</div>
+					</SwitchCase>
+					<DefaultSwitchCase>
+						<ul>
+							{visibleCategories.map((category: ObservableCategory) => (
+								<li>
+									{props.flat
+										? renderFlatCategory(category, props.baseUrl, props.selectedNode)
+										: renderCategory(category, props.baseUrl, props.selectedNode)}
+								</li>
+							))}
+						</ul>
+					</DefaultSwitchCase>
 				</Switch>
 			</div>
 		</header>

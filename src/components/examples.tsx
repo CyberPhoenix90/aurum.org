@@ -1,4 +1,4 @@
-import { Aurum, DataSource, Template, AurumElement, CancellationToken } from 'aurumjs';
+import { Aurum, AurumElement, CancellationToken, DataSource } from 'aurumjs';
 declare const Babel: any;
 declare const r: any;
 
@@ -105,7 +105,7 @@ return function() {
 		Delete items.
 		Filter by done.
 		Mark as done.`,
-		code: new DataSource(`import { DataSource, ArrayDataSource, Switch } from 'aurumjs'
+		code: new DataSource(`import { DataSource, ArrayDataSource, Switch, SwitchCase, DefaultSwitchCase } from 'aurumjs'
 
 return function Todo() {
 	const todoSource = new ArrayDataSource();
@@ -145,25 +145,25 @@ return function Todo() {
 								style={model.done.map((done) => (done ? 'color: red;text-decoration: line-through;display: flex;justify-content: space-between;' : 'display: flex;justify-content: space-between;'))}
 							>
 								<Switch state={editing}>
-									<template
-										ref={model.id}
-										generator={() => (
-											<input
-												onBlur={() => editing.update(undefined)}
-												onAttach={(input) => input.node.focus()}
-												initialValue={model.text.value}
-												onKeyDown={(e) => {
-													if (e.keyCode === 13) {
-														model.text.update(e.target.value);
-														editing.update(undefined);
-													} else if (e.keyCode === 27) {
-														editing.update(undefined);
-													}
-												}}
-											/>
-										)}
-									></template>
-									<template ref="default" generator={() => <div onDblClick={(e) => editing.update(model.id)}>{model.text}</div>}></template>
+									<SwitchCase
+										when={model.id}>
+										<input
+										onBlur={() => editing.update(undefined)}
+										onAttach={(input) => input.node.focus()}
+										initialValue={model.text.value}
+										onKeyDown={(e) => {
+											if (e.keyCode === 13) {
+												model.text.update(e.target.value);
+												editing.update(undefined);
+											} else if (e.keyCode === 27) {
+												editing.update(undefined);
+											}
+										}}
+										/>
+									</SwitchCase>
+									<DefaultSwitchCase>
+										<div onDblClick={(e) => editing.update(model.id)}>{model.text}</div>
+									</DefaultSwitchCase>
 								</Switch>
 								<span>
 									<button onClick={() => model.done.update(!model.done.value)}>

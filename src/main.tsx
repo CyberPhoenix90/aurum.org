@@ -1,4 +1,4 @@
-import { Aurum, AurumRouter } from 'aurumjs';
+import { Aurum, AurumRouter, Route, DefaultRoute } from 'aurumjs';
 import '../scss/main.scss';
 import { Advantages } from './components/advantages';
 import { Examples } from './components/examples';
@@ -15,19 +15,21 @@ Aurum.attach(
 	<div onAttach={() => setTimeout(() => M.AutoInit())}>
 		<Navbar></Navbar>
 		<AurumRouter>
-			<template ref="/documentation" generator={() => <DocumentationPage></DocumentationPage>}></template>
-			<template ref="/getting_started" generator={() => <GettingStarted></GettingStarted>}></template>
-			<template
-				generator={() => (
-					<div>
-						<MainTitle></MainTitle>
-						<Advantages></Advantages>
-						<div class="container">
-							<Examples></Examples>
-						</div>
+			<Route href="/documentation">
+				<DocumentationPage></DocumentationPage>
+			</Route>
+			<Route href="/getting_started">
+				<GettingStarted></GettingStarted>>
+			</Route>
+			<DefaultRoute>
+				<div>
+					<MainTitle></MainTitle>
+					<Advantages></Advantages>
+					<div class="container">
+						<Examples></Examples>
 					</div>
-				)}
-			></template>
+				</div>
+			</DefaultRoute>
 		</AurumRouter>
 	</div>,
 	document.body
