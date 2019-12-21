@@ -43,7 +43,7 @@
 	},
 	"dependencies": {
 		"@babel/standalone": "^7.7.4",
-		"aurumjs": "0.3.6",
+		"aurumjs": "0.3.7",
 		"marked": "^0.8.0",
 		"materialize-css": "^1.0.0-rc.2",
 		"monaco-editor": "^0.18.1"

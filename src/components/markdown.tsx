@@ -5,7 +5,7 @@ export function Markdown(_, children): AurumElement {
 	return (
 		<div
 			onAttach={(element) => {
-				element.node.innerHTML = marked(children[0]);
+				element.innerHTML = marked(children[0]);
 			}}
 		></div>
 	);

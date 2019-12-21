@@ -1,4 +1,4 @@
-import { Aurum, AurumElement, CancellationToken, DataSource } from 'aurumjs';
+import { Aurum, CancellationToken, DataSource } from 'aurumjs';
 declare const Babel: any;
 declare const r: any;
 
@@ -138,7 +138,7 @@ return function Todo() {
 								draggable="true"
 								onDragStart={() => (draggedNode = item)}
 								onDragEnter={(e) => {
-									if (draggedNode.node.parentElement === item.node.parentElement) {
+									if (draggedNode.parentElement === item.parentElement) {
 										todoSource.swapItems(item.model, draggedNode.model);
 									}
 								}}
@@ -149,7 +149,7 @@ return function Todo() {
 										when={model.id}>
 										<input
 										onBlur={() => editing.update(undefined)}
-										onAttach={(input) => input.node.focus()}
+										onAttach={(input) => input.focus()}
 										initialValue={model.text.value}
 										onKeyDown={(e) => {
 											if (e.keyCode === 13) {
@@ -190,32 +190,24 @@ return function Todo() {
 ];
 
 function evaluate(dataSource: DataSource<string>, cancellationToken: CancellationToken) {
-	let root: AurumElement;
-	dataSource
-		.unique()
-		.debounce(1000)
-		.listen((newCode) => {
-			renderCode(newCode);
-		}, cancellationToken);
 	return (
-		<div
-			onAttach={(div) => {
-				root = div;
-				renderCode(dataSource.value);
-			}}
-		></div>
+		<div>
+			{dataSource
+				.unique()
+				.debounce(1000)
+				.map((newCode) => renderCode(newCode), cancellationToken)}
+		</div>
 	);
 
 	async function renderCode(newCode: string) {
-		root.clearChildren();
 		try {
 			const aurumAll = await import('aurumjs');
 			const code: string = Babel.transform('(() => {/** @jsx Aurum.Aurum.factory */	\n' + replaceImport(newCode) + '})()', {
 				presets: ['es2015', 'react']
 			}).code;
-			root.addChild(new Function('Aurum', 'return ' + code.substring(code.indexOf('(')))(aurumAll)());
+			return new Function('Aurum', 'return ' + code.substring(code.indexOf('(')))(aurumAll)();
 		} catch (e) {
-			root.addChild(<pre>{e}</pre>);
+			return <pre>{e}</pre>;
 		}
 	}
 }
@@ -241,7 +233,7 @@ export function Examples() {
 							<div class="col s8 m6">
 								<div
 									style="height:300px;border:1px solid #ccc"
-									onAttach={(d) => {
+									onAttach={(d: HTMLDivElement) => {
 										r(['vs/editor/editor.main'], async function() {
 											const text = await (await fetch('data/aurum.d.ts')).text();
 
@@ -249,7 +241,7 @@ export function Examples() {
 											monaco.languages.typescript.javascriptDefaults.addExtraLib([text].join('\n'), 'aurum.d.ts');
 
 											//@ts-ignore
-											const editor = monaco.editor.create(d.node as HTMLDivElement, {
+											const editor = monaco.editor.create(d as HTMLDivElement, {
 												value: data.code.value,
 												minimap: {
 													enabled: false
@@ -263,7 +255,7 @@ export function Examples() {
 									}}
 								></div>
 							</div>
-							<div onDispose={() => token.cancel()} class="col s4 m3">
+							<div onDetach={() => token.cancel()} class="col s4 m3">
 								<div>Result</div>
 								{evaluate(data.code, token)}
 							</div>

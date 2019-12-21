@@ -1,4 +1,4 @@
-import { Aurum, AurumElement, DataSource, Suspense } from 'aurumjs';
+import { Aurum, DataSource, Suspense, AurumElementModel } from 'aurumjs';
 import { Category, ContentList } from '../content_list';
 
 interface DocumentationNodeReference {
@@ -38,7 +38,7 @@ interface DocumentationNode {
 	children: DocumentationNode[];
 }
 
-export type Markup = string | AurumElement | Array<string | AurumElement | Markup>;
+export type Markup = string | AurumElementModel | Array<string | AurumElementModel | Markup>;
 
 export function DocumentationPage() {
 	return (
@@ -112,7 +112,7 @@ function getSelectedNode(nodes: Map<string, DocumentationNode>): DocumentationNo
 	}
 }
 
-function renderRootNode(node: DocumentationNode, nodeById: Map<number, DocumentationNode>): AurumElement {
+function renderRootNode(node: DocumentationNode, nodeById: Map<number, DocumentationNode>): AurumElementModel {
 	if (!node) {
 		return <div>No item selected</div>;
 	}
@@ -155,7 +155,7 @@ function isInternal(node: DocumentationNode) {
 	return !!node?.comment?.tags?.some((t) => t.tag === 'internal') || node.name.startsWith('__');
 }
 
-function renderMetadata(node: DocumentationNode): AurumElement {
+function renderMetadata(node: DocumentationNode): AurumElementModel {
 	return (
 		<summary>
 			<details>
@@ -165,7 +165,7 @@ function renderMetadata(node: DocumentationNode): AurumElement {
 	);
 }
 
-function renderFunction(node: DocumentationNode, nodeById: Map<number, DocumentationNode>): AurumElement {
+function renderFunction(node: DocumentationNode, nodeById: Map<number, DocumentationNode>): AurumElementModel {
 	return (
 		<div>
 			<h6>{getFullSignature(node.signatures[0], nodeById)}</h6>
@@ -174,15 +174,15 @@ function renderFunction(node: DocumentationNode, nodeById: Map<number, Documenta
 	);
 }
 
-function renderFunctionInline(node: DocumentationNode, nodeById: Map<number, DocumentationNode>): AurumElement {
+function renderFunctionInline(node: DocumentationNode, nodeById: Map<number, DocumentationNode>): AurumElementModel {
 	return <span>{getFullSignature(node.signatures[0], nodeById)}</span>;
 }
 
-function renderGetterAccessorInline(node: DocumentationNode, nodeById: Map<number, DocumentationNode>): AurumElement {
+function renderGetterAccessorInline(node: DocumentationNode, nodeById: Map<number, DocumentationNode>): AurumElementModel {
 	return <span>get {getFullProperty(node, nodeById)}</span>;
 }
 
-function renderGetterAccessor(node: DocumentationNode, nodeById: Map<number, DocumentationNode>): AurumElement {
+function renderGetterAccessor(node: DocumentationNode, nodeById: Map<number, DocumentationNode>): AurumElementModel {
 	return (
 		<div>
 			<h6>get {getFullProperty(node, nodeById)}</h6>
@@ -191,11 +191,11 @@ function renderGetterAccessor(node: DocumentationNode, nodeById: Map<number, Doc
 	);
 }
 
-function renderPropertyInline(node: DocumentationNode, nodeById: Map<number, DocumentationNode>): AurumElement {
+function renderPropertyInline(node: DocumentationNode, nodeById: Map<number, DocumentationNode>): AurumElementModel {
 	return <span>{getFullProperty(node, nodeById)}</span>;
 }
 
-function renderProperty(node: DocumentationNode, nodeById: Map<number, DocumentationNode>): AurumElement {
+function renderProperty(node: DocumentationNode, nodeById: Map<number, DocumentationNode>): AurumElementModel {
 	return (
 		<div>
 			<h6>{getFullProperty(node, nodeById)}</h6>
@@ -205,7 +205,7 @@ function renderProperty(node: DocumentationNode, nodeById: Map<number, Documenta
 }
 
 function renderJsDoc(node: DocumentationNode) {
-	const clauses: AurumElement[] = [];
+	const clauses: AurumElementModel[] = [];
 
 	if (!node.comment) {
 		return null;
@@ -329,8 +329,8 @@ function getFullParameterSignature(node: DocumentationNode, nodeById: Map<number
 	return [name];
 }
 
-function renderNodeName(node: DocumentationNode, nodeById: Map<number, DocumentationNode>): AurumElement {
-	const markup: Array<string | AurumElement> = [];
+function renderNodeName(node: DocumentationNode, nodeById: Map<number, DocumentationNode>): AurumElementModel {
+	const markup: Markup = [];
 	if (node.extendedTypes) {
 		const extend: DocumentationNodeReference[] = [];
 		const implement: DocumentationNodeReference[] = [];
