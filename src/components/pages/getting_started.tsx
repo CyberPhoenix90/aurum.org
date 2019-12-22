@@ -103,18 +103,24 @@ const courses: Category[] = [
 		]
 	},
 	{
-		name: 'Control flow',
+		name: 'Builtins',
 		sections: [
 			{
 				prefix: '1. ',
 				href: 'switches',
-				name: 'Branching in HTML',
+				name: 'Switch component',
 				id: 'switches'
 			},
 			{
 				prefix: '2. ',
+				href: 'router',
+				name: 'Router component',
+				id: 'router'
+			},
+			{
+				prefix: '3. ',
 				href: 'suspense',
-				name: 'Suspense',
+				name: 'Suspense component',
 				id: 'suspense'
 			}
 		]
@@ -157,6 +163,9 @@ export function GettingStarted() {
 							</Route>
 							<Route href="/getting_started/examples">
 								<ExamplePage></ExamplePage>
+							</Route>
+							<Route href="/getting_started/transclude">
+								<MarkdownPage title="Transclusion" url="/documentation/transclusion.md"></MarkdownPage>
 							</Route>
 							<DefaultRoute>
 								<MarkdownPage title="Quickstart" url="/documentation/quickstart.md"></MarkdownPage>

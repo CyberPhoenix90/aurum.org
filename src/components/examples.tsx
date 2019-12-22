@@ -189,13 +189,19 @@ return function Todo() {
 	}
 ];
 
-function evaluate(dataSource: DataSource<string>, cancellationToken: CancellationToken) {
+function Evaluate(props, children) {
+	const { dataSource, cancellationToken } = props;
 	return (
 		<div>
 			{dataSource
 				.unique()
 				.debounce(1000)
-				.map((newCode) => renderCode(newCode), cancellationToken)}
+				.map(
+					(newCode) => (
+						<div>{renderCode(newCode)}</div>
+					),
+					cancellationToken
+				)}
 		</div>
 	);
 
@@ -207,7 +213,7 @@ function evaluate(dataSource: DataSource<string>, cancellationToken: Cancellatio
 			}).code;
 			return new Function('Aurum', 'return ' + code.substring(code.indexOf('(')))(aurumAll)();
 		} catch (e) {
-			return <pre>{e}</pre>;
+			return <pre>{e.toString()}</pre>;
 		}
 	}
 }
@@ -257,7 +263,7 @@ export function Examples() {
 							</div>
 							<div onDetach={() => token.cancel()} class="col s4 m3">
 								<div>Result</div>
-								{evaluate(data.code, token)}
+								<Evaluate dataSource={data.code} cancellationToken={token}></Evaluate>
 							</div>
 						</li>
 					))}
