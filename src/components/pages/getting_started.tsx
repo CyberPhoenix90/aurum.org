@@ -114,7 +114,7 @@ const courses: Category[] = [
 			{
 				prefix: '2. ',
 				href: 'router',
-				name: 'Router component',
+				name: 'AurumRouter component',
 				id: 'router'
 			},
 			{
@@ -160,6 +160,15 @@ export function GettingStarted() {
 							</Route>
 							<Route href="/getting_started/babel">
 								<MarkdownPage title="Using Aurum with babel" url="/documentation/babel.md"></MarkdownPage>
+							</Route>
+							<Route href="/getting_started/switches">
+								<MarkdownPage title="Builtin components: Switch" url="/documentation/switches.md"></MarkdownPage>
+							</Route>
+							<Route href="/getting_started/router">
+								<MarkdownPage title="Builtin components: Router" url="/documentation/router.md"></MarkdownPage>
+							</Route>
+							<Route href="/getting_started/suspense">
+								<MarkdownPage title="Builtin components: Suspense" url="/documentation/suspense.md"></MarkdownPage>
 							</Route>
 							<Route href="/getting_started/examples">
 								<ExamplePage></ExamplePage>

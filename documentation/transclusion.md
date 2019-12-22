@@ -1,4 +1,4 @@
-Tranclusion is where you take child elements given to your functional component and you use them in a way usually rendering them in a specific spot. Transclusion is a great tool to make semantic HTML and is used in such cases like the builtin [Switch](#/getting_started/switches), [Router](#/getting_started/router) and [Suspense](#/getting_started/suspense) components
+Tranclusion is where you take child elements given to your functional component and you use them in a way usually rendering them in a specific spot. Transclusion is a great tool to make semantic HTML and is used in such cases like the builtin [Switch](#/getting_started/switches), [AurumRouter](#/getting_started/router) and [Suspense](#/getting_started/suspense) components
 
 #### Basics of transclusion
 
