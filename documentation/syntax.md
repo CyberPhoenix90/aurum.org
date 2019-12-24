@@ -1,9 +1,6 @@
 Aurum is powered by the JSX syntax, almost all JSX knowledge from react, preact and friends applies directly to Aurum.
 
-```
-Even though Aurum's JSX is not exactly like other libraries it does not require special plugins for babel or typescript.
-Any JSX to JS compilers will work just fine
-```
+> Even though Aurum's JSX is not exactly like other libraries it does not require special plugins for babel or typescript. Any JSX to JS compilers will work just fine
 
 ### Aurum's JSX syntax for people who used React JSX before
 There are 3 major differences between React's syntax and Aurums

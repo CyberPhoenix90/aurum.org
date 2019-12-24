@@ -19,7 +19,7 @@ Aurum.attach(
 				<DocumentationPage></DocumentationPage>
 			</Route>
 			<Route href="/getting_started">
-				<GettingStarted></GettingStarted>>
+				<GettingStarted></GettingStarted>
 			</Route>
 			<DefaultRoute>
 				<div>

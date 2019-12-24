@@ -134,54 +134,50 @@ export function GettingStarted() {
 	});
 
 	return (
-		<div style="display:flex">
+		<div class="documentation-page">
 			<ContentList selectedNode={selectedNode} baseUrl="#/getting_started/" content={courses}></ContentList>
-			<div class="container" style="width:100%">
-				<div class="row">
-					<div class="col s12 m12 xl12">
-						<AurumRouter>
-							<Route href="/getting_started/coreideas">
-								<MarkdownPage title="Core ideas" url="/documentation/core_ideas.md"></MarkdownPage>
-							</Route>
-							<Route href="/getting_started/why">
-								<MarkdownPage title="Why Aurum" url="/documentation/why.md"></MarkdownPage>
-							</Route>
-							<Route href="/getting_started/syntax">
-								<MarkdownPage title="Syntax" url="/documentation/syntax.md"></MarkdownPage>
-							</Route>
-							<Route href="/getting_started/classes">
-								<MarkdownPage title="Class based components" url="/documentation/classes.md"></MarkdownPage>
-							</Route>
-							<Route href="/getting_started/functional">
-								<MarkdownPage title="Function based components" url="/documentation/functional.md"></MarkdownPage>
-							</Route>
-							<Route href="/getting_started/typescript">
-								<MarkdownPage title="Using Aurum with typescript" url="/documentation/typescript.md"></MarkdownPage>
-							</Route>
-							<Route href="/getting_started/babel">
-								<MarkdownPage title="Using Aurum with babel" url="/documentation/babel.md"></MarkdownPage>
-							</Route>
-							<Route href="/getting_started/switches">
-								<MarkdownPage title="Builtin components: Switch" url="/documentation/switches.md"></MarkdownPage>
-							</Route>
-							<Route href="/getting_started/router">
-								<MarkdownPage title="Builtin components: Router" url="/documentation/router.md"></MarkdownPage>
-							</Route>
-							<Route href="/getting_started/suspense">
-								<MarkdownPage title="Builtin components: Suspense" url="/documentation/suspense.md"></MarkdownPage>
-							</Route>
-							<Route href="/getting_started/examples">
-								<ExamplePage></ExamplePage>
-							</Route>
-							<Route href="/getting_started/transclude">
-								<MarkdownPage title="Transclusion" url="/documentation/transclusion.md"></MarkdownPage>
-							</Route>
-							<DefaultRoute>
-								<MarkdownPage title="Quickstart" url="/documentation/quickstart.md"></MarkdownPage>
-							</DefaultRoute>
-						</AurumRouter>
-					</div>
-				</div>
+			<div class="documentation-content">
+				<AurumRouter>
+					<Route href="/getting_started/coreideas">
+						<MarkdownPage title="Core ideas" url="/documentation/core_ideas.md"></MarkdownPage>
+					</Route>
+					<Route href="/getting_started/why">
+						<MarkdownPage title="Why Aurum" url="/documentation/why.md"></MarkdownPage>
+					</Route>
+					<Route href="/getting_started/syntax">
+						<MarkdownPage title="Syntax" url="/documentation/syntax.md"></MarkdownPage>
+					</Route>
+					<Route href="/getting_started/classes">
+						<MarkdownPage title="Class based components" url="/documentation/classes.md"></MarkdownPage>
+					</Route>
+					<Route href="/getting_started/functional">
+						<MarkdownPage title="Function based components" url="/documentation/functional.md"></MarkdownPage>
+					</Route>
+					<Route href="/getting_started/typescript">
+						<MarkdownPage title="Using Aurum with typescript" url="/documentation/typescript.md"></MarkdownPage>
+					</Route>
+					<Route href="/getting_started/babel">
+						<MarkdownPage title="Using Aurum with babel" url="/documentation/babel.md"></MarkdownPage>
+					</Route>
+					<Route href="/getting_started/switches">
+						<MarkdownPage title="Builtin components: Switch" url="/documentation/switches.md"></MarkdownPage>
+					</Route>
+					<Route href="/getting_started/router">
+						<MarkdownPage title="Builtin components: Router" url="/documentation/router.md"></MarkdownPage>
+					</Route>
+					<Route href="/getting_started/suspense">
+						<MarkdownPage title="Builtin components: Suspense" url="/documentation/suspense.md"></MarkdownPage>
+					</Route>
+					<Route href="/getting_started/examples">
+						<ExamplePage></ExamplePage>
+					</Route>
+					<Route href="/getting_started/transclude">
+						<MarkdownPage title="Transclusion" url="/documentation/transclusion.md"></MarkdownPage>
+					</Route>
+					<DefaultRoute>
+						<MarkdownPage title="Quickstart" url="/documentation/quickstart.md"></MarkdownPage>
+					</DefaultRoute>
+				</AurumRouter>
 			</div>
 		</div>
 	);

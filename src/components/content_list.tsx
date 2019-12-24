@@ -40,9 +40,9 @@ export function ContentList(props: ContentListProps) {
 	});
 
 	return (
-		<header style="flex:0 0 350px;">
+		<header class="content-list">
 			<div class="sidenav sidenav-fixed content-list" style="width:350px">
-				<input maxLength="20" style="padding-left:10px" placeholder="Search..." inputValueSource={inputSource}></input>
+				<input maxLength="20" placeholder="Search..." inputValueSource={inputSource}></input>
 				<Switch state={visibleCategories.length.debounce(0)}>
 					<SwitchCase when={0}>
 						<div>No results for {inputSource}</div>

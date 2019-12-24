@@ -88,13 +88,9 @@ async function Documentation() {
 	});
 
 	return (
-		<div style="display:flex">
+		<div class="documentation-page">
 			<ContentList selectedNode={selectedNode} baseUrl="#/documentation/" flat={true} content={model}></ContentList>
-			<div class="container" style="width:100%">
-				<div class="row">
-					<div class="col s12 m12 xl12">{pageContent}</div>
-				</div>
-			</div>
+			<div class="documentation-content">{pageContent}</div>
 		</div>
 	);
 }
