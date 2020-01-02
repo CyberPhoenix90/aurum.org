@@ -174,6 +174,15 @@ export function GettingStarted() {
 					<Route href="/getting_started/transclude">
 						<MarkdownPage title="Transclusion" url="/documentation/transclusion.md"></MarkdownPage>
 					</Route>
+					<Route href="/getting_started/datasource">
+						<MarkdownPage title="DataSource" url="/documentation/datasource.md"></MarkdownPage>
+					</Route>
+					<Route href="/getting_started/arraydatasource">
+						<MarkdownPage title="ArrayDataSource" url="/documentation/arraydatasource.md"></MarkdownPage>
+					</Route>
+					<Route href="/getting_started/objectdatasource">
+						<MarkdownPage title="ObjectDataSource" url="/documentation/objectdatasource.md"></MarkdownPage>
+					</Route>
 					<DefaultRoute>
 						<MarkdownPage title="Quickstart" url="/documentation/quickstart.md"></MarkdownPage>
 					</DefaultRoute>
