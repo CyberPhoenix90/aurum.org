@@ -31,9 +31,11 @@ export function ContentList(props: ContentListProps) {
 	const visibleCategories: FilteredArrayView<ObservableCategory> = new ArrayDataSource(
 		props.content.map((p) => ({
 			name: p.name,
-			sections: new FilteredArrayView(p.sections)
+			sections: new FilteredArrayView(p.sections).persist()
 		}))
-	).filter(() => true);
+	)
+		.filter(() => true)
+		.persist();
 
 	inputSource.listen((value) => {
 		visibleCategories.updateFilter((e) => !!e.sections.updateFilter((s) => s.name.toLowerCase().includes(value.toLowerCase())));
