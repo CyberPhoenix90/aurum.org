@@ -51,6 +51,9 @@
 
 .sidenav.sidenav-fixed {
 	transform: unset !important;
+	li > a {
+		padding-right:0
+	}
 }
 
 .documentation-page {

@@ -43,59 +43,45 @@ function FunctionRenderer(props, children) {
 ```
 With this you can now render functions directly in JSX. Using data sources in your component you could make new types of dynamically updating objects that you can just render
 
-#### Understanding buildRenderableFromModel
+#### Understanding prerender
 
 ##### 1. Lazy loaded JSX elements
 In Aurum all JSX elements are rendered lazily. This means that in your functional components the children that come from a JSX notation such as \<div></div> or \<MyComponent></MyComponent> are not actually rendered yet. They are just a model containing information needed to render it.
-This means it is possible to create custom components that only selectively render children but it also means that if you want to access the real rendered content inside the component you have to call buildRenderableFromModel to render it on the spot.
+This means it is possible to create custom components that only selectively render children but it also means that if you want to access the real rendered content inside the component you have to call api.prerender to render it on the spot.
 
-##### 2. Using buildRenderableFromModel
-buildRenderableFromModel is a function provided by Aurum. In your component you can either return the model or the already rendered content directly Aurum can deal with both.
-buildRenderableFromModel can accept any object, it will return anything unchanged that isn't a model for an aurum node.
+##### 2. Using api.prerender
+prerender is a function provided by the api of your component. You can pass it children and it will render them synchronously on the spot. It is important to understand the consequences of that. If you render components you will execute their logic which could lead to side effects. However since your component is not guaranteed to end up using the prerendered content you have to pass a life cycle object to prerender. The life cycle object is obtained be calling the function createLifeCycle that you can import from aurum. There are 2 ways to use a life cycle object. You can use api.synchronizeLifeCycle(lifeCycleObject). Use this if the prerendered content is going to be attached and detached together with the component that did the prerendereing. This means the object is unconditionally rendered immediately in the component. If there are conditions or the object is rendered with a delay you have to instead call lifeCycleObject.onAttach after the object did get rendered and lifeCycleObject.onDetach if you decided to not render it at all or after it was removed after being rendered
 
 ##### 3. Use cases
-Reasons you might want to render the elements on the spot: You want to access the API of the [AurumElements](#/documentation/AurumElement) directly or to validate the type of children to only allow certain types in your component or to process custom renderable types that were returned by a JSX notation Component.
+Reasons you might want to render the elements on the spot could be for example you want to allow new return types in components and need to render the component on the spot to handle the return value.
 
-Note that when using the {someValue} notation (as in \<div>{someValue}\</div>). The value does not render lazily, it gets passed as is to the component in the children array. 
-
+Note that when using the {someValue} notation (as in \<div>{someValue}\</div>). The value does not render lazily, it gets passed as is to the component in the children array and can be used to avoid needing prerender.
 
 #### Advanced transclusion
-
-Example of using all the above features for semantic HTML:
+Example of using all the above features to implement suspense:
 ```
-const switchCaseIdentity = Symbol('switchCase');
+export function Suspense(props, children, api) {
+	const data = new DataSource(props?.fallback);
 
-function Switch(props, children) {
-    //Render the children, otherwise you only have access to their JSX model
-	children = children.map(buildRenderableFromModel);
-	if (children.some((c) => !c[switchCaseIdentity])) {
-		throw new Error('Switch only accepts SwitchCase as children');
-	}
+	const lc = createLifeCycle();
 
-    //Map the data source so to always update the DOM to match the wanted state
-	return props.state.unique().map((state) => selectCase(state, children));
+	api.onDetach(() => {
+		lc.onDetach();
+	});
+
+	Promise.all(api.prerender(children, lc)).then(
+		(res) => {
+			if (!api.cancellationToken.isCanceled) {
+				data.update(res);
+				lc.onAttach();
+			}
+		},
+		(e) => {
+			lc.onDetach();
+			return Promise.reject(e);
+		}
+	);
+
+	return data;
 }
-
-function selectCase(state, children) {
-	return children.find((c) => c.value === state)?.content;
-}
-
-function SwitchCase(props, children) {
-	return {
-		[switchCaseIdentity]: true,
-		content: children,
-		value: props.when
-	};
-}
-
 ```
-
-Usage:
-
-```
-<Switch state={someDataSource}>
-    <SwitchCase when="1"><div>HTML Branch when value is one</div></SwitchCase>
-    <SwitchCase when="2"><div>HTML Branch when value is two</div></SwitchCase>
-</Switch>
-```
-This will automatically rerender when someDataSource changes and only the branch that is currently needed is rendered. This is how the builtin [Switch](#/getting_started/switches) component is implemented

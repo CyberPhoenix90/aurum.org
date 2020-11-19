@@ -1,4 +1,4 @@
-import { Aurum, DataSource, Suspense, AurumElementModel } from 'aurumjs';
+import { Aurum, DataSource, Renderable, Suspense } from 'aurumjs';
 import { Category, ContentList } from '../content_list';
 
 interface DocumentationNodeReference {
@@ -8,16 +8,21 @@ interface DocumentationNodeReference {
 }
 
 interface DocumentationTypeNode {
+	types: DocumentationTypeNode[];
+	typeArguments: DocumentationTypeNode[];
 	type: string;
 	name?: string;
 	declaration?: DocumentationNode;
-	elementType: DocumentationNodeReference;
+	elementType: DocumentationTypeNode;
 }
 
 interface DocumentationNode {
-	type?: DocumentationTypeNode | DocumentationNodeReference;
+	indexSignature?: DocumentationNode;
+	type?: DocumentationTypeNode;
 	flags?: {
+		isExported?: boolean;
 		isOptional?: boolean;
+		isRest?: boolean;
 	};
 	name: string;
 	kind: number;
@@ -37,8 +42,6 @@ interface DocumentationNode {
 	};
 	children: DocumentationNode[];
 }
-
-export type Markup = string | AurumElementModel | Array<string | AurumElementModel | Markup>;
 
 export function DocumentationPage() {
 	return (
@@ -108,16 +111,18 @@ function getSelectedNode(nodes: Map<string, DocumentationNode>): DocumentationNo
 	}
 }
 
-function renderRootNode(node: DocumentationNode, nodeById: Map<number, DocumentationNode>): AurumElementModel {
+function renderRootNode(node: DocumentationNode, nodeById: Map<number, DocumentationNode>): Renderable {
 	if (!node) {
 		return <div>No item selected</div>;
 	}
 
 	return (
 		<div>
-			<h3>
-				{node.kindString} {renderNodeName(node, nodeById)}
-			</h3>
+			<h4>
+				{node.kindString} {getFullSignature(node, nodeById)}
+			</h4>
+			{node.comment?.shortText ? <h5>{node.comment.shortText}</h5> : undefined}
+			{node.signatures?.[0].comment?.shortText ? <h5>{node.signatures[0].comment.shortText}</h5> : undefined}
 			{(node?.type as DocumentationTypeNode)?.declaration?.signatures?.[0] && (
 				<h5>Alias for: {getFullSignature((node.type as DocumentationTypeNode).declaration.signatures[0], nodeById)}</h5>
 			)}
@@ -126,6 +131,8 @@ function renderRootNode(node: DocumentationNode, nodeById: Map<number, Documenta
 			<div class="documentation-sections">
 				{node.children?.map((c) => {
 					switch (c.kind) {
+						case 2:
+							return;
 						case 64:
 						case 512:
 						case 2048:
@@ -148,10 +155,10 @@ function renderRootNode(node: DocumentationNode, nodeById: Map<number, Documenta
 }
 
 function isInternal(node: DocumentationNode) {
-	return !!node?.comment?.tags?.some((t) => t.tag === 'internal') || node.name.startsWith('__');
+	return !node.flags.isExported || !!node?.comment?.tags?.some((t) => t.tag === 'internal') || node.name.startsWith('__');
 }
 
-function renderMetadata(node: DocumentationNode): AurumElementModel {
+function renderMetadata(node: DocumentationNode): Renderable {
 	return (
 		<summary>
 			<details>
@@ -161,7 +168,7 @@ function renderMetadata(node: DocumentationNode): AurumElementModel {
 	);
 }
 
-function renderFunction(node: DocumentationNode, nodeById: Map<number, DocumentationNode>): AurumElementModel {
+function renderFunction(node: DocumentationNode, nodeById: Map<number, DocumentationNode>): Renderable {
 	return (
 		<div>
 			<h6>{getFullSignature(node.signatures[0], nodeById)}</h6>
@@ -170,15 +177,15 @@ function renderFunction(node: DocumentationNode, nodeById: Map<number, Documenta
 	);
 }
 
-function renderFunctionInline(node: DocumentationNode, nodeById: Map<number, DocumentationNode>): AurumElementModel {
+function renderFunctionInline(node: DocumentationNode, nodeById: Map<number, DocumentationNode>): Renderable {
 	return <span>{getFullSignature(node.signatures[0], nodeById)}</span>;
 }
 
-function renderGetterAccessorInline(node: DocumentationNode, nodeById: Map<number, DocumentationNode>): AurumElementModel {
+function renderGetterAccessorInline(node: DocumentationNode, nodeById: Map<number, DocumentationNode>): Renderable {
 	return <span>get {getFullProperty(node, nodeById)}</span>;
 }
 
-function renderGetterAccessor(node: DocumentationNode, nodeById: Map<number, DocumentationNode>): AurumElementModel {
+function renderGetterAccessor(node: DocumentationNode, nodeById: Map<number, DocumentationNode>): Renderable {
 	return (
 		<div>
 			<h6>get {getFullProperty(node, nodeById)}</h6>
@@ -187,11 +194,11 @@ function renderGetterAccessor(node: DocumentationNode, nodeById: Map<number, Doc
 	);
 }
 
-function renderPropertyInline(node: DocumentationNode, nodeById: Map<number, DocumentationNode>): AurumElementModel {
+function renderPropertyInline(node: DocumentationNode, nodeById: Map<number, DocumentationNode>): Renderable {
 	return <span>{getFullProperty(node, nodeById)}</span>;
 }
 
-function renderProperty(node: DocumentationNode, nodeById: Map<number, DocumentationNode>): AurumElementModel {
+function renderProperty(node: DocumentationNode, nodeById: Map<number, DocumentationNode>): Renderable {
 	return (
 		<div>
 			<h6>{getFullProperty(node, nodeById)}</h6>
@@ -201,7 +208,7 @@ function renderProperty(node: DocumentationNode, nodeById: Map<number, Documenta
 }
 
 function renderJsDoc(node: DocumentationNode) {
-	const clauses: AurumElementModel[] = [];
+	const clauses: Renderable[] = [];
 
 	if (!node.comment) {
 		return null;
@@ -226,7 +233,7 @@ function renderJsDoc(node: DocumentationNode) {
 	return clauses;
 }
 
-function getFullProperty(node: DocumentationNode, nodeById: Map<number, DocumentationNode>): Markup {
+function getFullProperty(node: DocumentationNode, nodeById: Map<number, DocumentationNode>): Renderable {
 	let property = node.name;
 
 	if (node.type) {
@@ -240,7 +247,7 @@ function getFullProperty(node: DocumentationNode, nodeById: Map<number, Document
 	return [property];
 }
 
-function renderNodeInline(node: DocumentationNode, nodeById: Map<number, DocumentationNode>): Markup {
+function renderNodeInline(node: DocumentationNode, nodeById: Map<number, DocumentationNode>): Renderable {
 	switch (node.kind) {
 		case 64:
 		case 512:
@@ -259,36 +266,71 @@ function renderNodeInline(node: DocumentationNode, nodeById: Map<number, Documen
 	}
 }
 
-function typeNodeToMarkup(node: DocumentationTypeNode | DocumentationNodeReference, nodeById: Map<number, DocumentationNode>): Markup {
+function renderIndexSignature(signature: DocumentationNode, nodeById: Map<number, DocumentationNode>): Renderable {
+	return ['[', getFullParameterSignature(signature.parameters[0], nodeById), ']:', typeNodeToMarkup(signature.type, nodeById)];
+}
+
+function typeNodeToMarkup(node: DocumentationTypeNode, nodeById: Map<number, DocumentationNode>): Renderable {
 	if (node.type === 'reflection') {
 		const declaration = (node as DocumentationTypeNode).declaration;
 		if (declaration.signatures) {
 			return getFullSignature((node as DocumentationTypeNode).declaration.signatures[0], nodeById);
 		} else {
 			if (declaration.kind === 65536) {
-				return ['{', declaration.children.map((p) => renderNodeInline(p, nodeById)), '}'];
+				return [
+					'{',
+					declaration.indexSignature ? renderIndexSignature(declaration.indexSignature[0], nodeById) : null,
+					...(declaration.children?.map((p) => renderNodeInline(p, nodeById)) ?? []),
+					'}'
+				];
 			} else {
 				return ['any'];
 			}
 		}
 	} else if (node.type === 'typeParameter') {
 		return [node.name];
+	} else if (node.type === 'union') {
+		return insertBetween(
+			node.types.map((t) => typeNodeToMarkup(t, nodeById)),
+			' | '
+		);
 	} else if (node.type === 'array') {
-		return [typeNodeToMarkup((node as DocumentationTypeNode).elementType, nodeById), '[]'];
+		return [typeNodeToMarkup(node.elementType, nodeById), '[]'];
+	} else if (node.type === 'intrinsic' || node.name === 'Array') {
+		return [node.name, node.typeArguments ? ['<', insertBetween(node.typeArguments.map((t) => typeNodeToMarkup(t, nodeById))), '>'] : null];
 	} else if (node.type === 'reference') {
-		return [<a href={linkFactory(node.name)}>{node.name}</a>];
-	} else if (node.type === 'intrinsic') {
-		return [node.name];
+		return [
+			<a href={linkFactory(node.name)}>{node.name}</a>,
+			node.typeArguments ? ['<', insertBetween(node.typeArguments.map((t) => typeNodeToMarkup(t, nodeById))), '>'] : null
+		];
 	} else {
 		return ['any'];
 	}
 }
 
-function getFullSignature(node: DocumentationNode, nodeById: Map<number, DocumentationNode>): Markup {
+function insertBetween<T>(array: T[], insert: any = ', '): T[] {
+	const result = [];
+	for (let i = 0; i < array.length; i++) {
+		result.push(array[i]);
+		if (i < array.length - 1) {
+			result.push(' | ');
+		}
+	}
+	return result;
+}
+
+function getFullSignature(node: DocumentationNode, nodeById: Map<number, DocumentationNode>): Renderable {
 	let signature = [];
 	if (node.name !== '__call' && node.name !== '__type') {
 		signature.push(node.name);
 	}
+	if (node.kindString !== 'Constructor signature' && node.kindString !== 'Function' && node.kindString !== 'Call signature') {
+		return signature;
+	}
+	if (node.signatures) {
+		node = node.signatures[0];
+	}
+
 	signature.push('(');
 	if (node.parameters) {
 		let first = true;
@@ -313,11 +355,16 @@ function getFullSignature(node: DocumentationNode, nodeById: Map<number, Documen
 	return signature;
 }
 
-function getFullParameterSignature(node: DocumentationNode, nodeById: Map<number, DocumentationNode>): Markup {
+function getFullParameterSignature(node: DocumentationNode, nodeById: Map<number, DocumentationNode>): Renderable {
 	let name = node.name;
 	if (node.flags.isOptional) {
 		name += '?';
 	}
+
+	if (node.flags.isRest) {
+		name = `...${name}`;
+	}
+
 	if (node.type) {
 		return [name + ': ', typeNodeToMarkup(node.type, nodeById)];
 	}
@@ -325,8 +372,8 @@ function getFullParameterSignature(node: DocumentationNode, nodeById: Map<number
 	return [name];
 }
 
-function renderNodeName(node: DocumentationNode, nodeById: Map<number, DocumentationNode>): AurumElementModel {
-	const markup: Markup = [];
+function renderNodeName(node: DocumentationNode, nodeById: Map<number, DocumentationNode>): Renderable {
+	const markup: Renderable = [];
 	if (node.extendedTypes) {
 		const extend: DocumentationNodeReference[] = [];
 		const implement: DocumentationNodeReference[] = [];

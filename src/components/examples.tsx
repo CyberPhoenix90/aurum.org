@@ -1,4 +1,4 @@
-import { Aurum, CancellationToken, DataSource } from 'aurumjs';
+import { Aurum, CancellationToken, DataSource, dsDebounce, dsMap, dsUnique } from 'aurumjs';
 declare const Babel: any;
 declare const r: any;
 
@@ -105,7 +105,7 @@ return function() {
 		Delete items.
 		Filter by done.
 		Mark as done.`,
-		code: new DataSource(`import { DataSource, ArrayDataSource, Switch, SwitchCase, DefaultSwitchCase } from 'aurumjs'
+		code: new DataSource(`import { DataSource, ArrayDataSource, Switch, SwitchCase, DefaultSwitchCase, dsMap } from 'aurumjs'
 
 return function Todo() {
 	const todoSource = new ArrayDataSource();
@@ -142,7 +142,7 @@ return function Todo() {
 										todoSource.swapItems(item.model, draggedNode.model);
 									}
 								}}
-								style={model.done.map((done) => (done ? 'color: red;text-decoration: line-through;display: flex;justify-content: space-between;' : 'display: flex;justify-content: space-between;'))}
+								style={model.done.transform(dsMap((done) => (done ? 'color: red;text-decoration: line-through;display: flex;justify-content: space-between;' : 'display: flex;justify-content: space-between;')))}
 							>
 								<Switch state={editing}>
 									<SwitchCase
@@ -167,7 +167,7 @@ return function Todo() {
 								</Switch>
 								<span>
 									<button onClick={() => model.done.update(!model.done.value)}>
-										{model.done.map((done) => (done ? 'Mark as not done' : 'Mark as done'))}
+										{model.done.transform(dsMap((done) => (done ? 'Mark as not done' : 'Mark as done')))}
 									</button>
 									<button onClick={() => {
 											if (editing.value === model.id) {
@@ -189,19 +189,16 @@ return function Todo() {
 	}
 ];
 
-function Evaluate(props, children) {
+function Evaluate(props: { dataSource: DataSource<string>; cancellationToken: CancellationToken }) {
 	const { dataSource, cancellationToken } = props;
 	return (
 		<div>
-			{dataSource
-				.unique()
-				.debounce(1000)
-				.map(
-					(newCode) => (
-						<div>{renderCode(newCode)}</div>
-					),
-					cancellationToken
-				)}
+			{dataSource.transform(
+				dsUnique(),
+				dsDebounce(1000),
+				dsMap((newCode) => <div>{renderCode(newCode)}</div>),
+				cancellationToken
+			)}
 		</div>
 	);
 

@@ -4,7 +4,7 @@ module.exports = {
 	mode: 'development',
 	devtool: 'inline-source-map',
 	entry: {
-		app: './src/main.tsx'
+		app: './src/setup.ts'
 	},
 	externals: ['vs/editor/editor.main'],
 	watch: true,

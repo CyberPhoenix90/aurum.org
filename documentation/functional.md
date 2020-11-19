@@ -1,4 +1,4 @@
-Components in aurum are just functions that return something Aurum can render, which means a string, number, bigint, promise, other components, aurum elements or an arbitrarily nested array of the previous items.
+Components in aurum are just functions that return something Aurum can render, which means a string, number, bigint, promise, other components, JSX elements or an arbitrarily nested array of the previous items.
 
 #### Simple functional component
 
@@ -47,6 +47,23 @@ function MyComponent(props, children) {
 </div>
 ```
 More info on that in [transclusion](#/getting_started/transclude)
+
+#### Functional component api
+
+If you want to hook into the life cycle of the component you can use the component api that is passed to your 
+component as third argument
+
+```
+function MyComponent(props, children, api) {
+    api.onAttach(() => console.log('I was just attached, my dom nodes if I have any are in the dom'))
+    api.onDetach(() => console.log('I was just dettached, my dom nodes if I had any are gone'))
+
+    return undefined;
+}
+```
+
+This allows having a callback for when the DOM nodes are in place to for example use other libraries to interact with the rendered nodes
+or have clean up callbacks after detach to free unmanaged resources. The api also provides a cancellation token that is cancelled when the component is detached.
 
 #### Life cycle
 

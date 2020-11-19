@@ -21,7 +21,7 @@ const inputText = new DataSource('')
 // Bind data to this div. It the markup will automatically be updated whenever data changes
 Aurum.attach(<div>
 <input inputValueSource={inputText}></input>
-<div>Characters: {inputText.map(text => text.length)}</div>
+<div>Characters: {inputText.transform(dsMap(text => text.length))}</div>
 </div>, document.body);
 ```
 
