@@ -7,7 +7,6 @@ module.exports = {
 		app: './src/setup.ts'
 	},
 	externals: ['vs/editor/editor.main'],
-	watch: true,
 	module: {
 		rules: [
 			{
@@ -20,7 +19,7 @@ module.exports = {
 				use: ['style-loader', 'css-loader']
 			},
 			{
-				test: /\.s[ac]ss$/i,
+				test: /\.less$/i,
 				exclude: /node_modules|dist/,
 				use: [
 					// Creates `style` nodes from JS strings
@@ -28,7 +27,7 @@ module.exports = {
 					// Translates CSS into CommonJS
 					'css-loader',
 					// Compiles Sass to CSS
-					'sass-loader'
+					'less-loader'
 				]
 			}
 		]
@@ -37,9 +36,9 @@ module.exports = {
 		extensions: ['.tsx', '.ts', '.js']
 	},
 	output: {
-		publicPath: './dist/',
+		publicPath: './',
 		globalObject: 'self',
-		filename: '[name].bundle.js',
+		filename: 'static/js/[name].bundle.js',
 		path: path.resolve(__dirname, 'dist')
 	},
 	devServer: {
