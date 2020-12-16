@@ -32,6 +32,14 @@ export function Navbar() {
 					</li>
 				</ul>
 
+				<ul class="left hide-on-med-and-down">
+					<li>
+						<div class="title">
+							<a href="#/aurum_canvas">Go to Aurum Canvas</a>
+						</div>
+					</li>
+				</ul>
+
 				<ul id="nav-mobile" class="sidenav">
 					<li>
 						<a href="#">Home</a>

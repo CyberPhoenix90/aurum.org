@@ -13,8 +13,9 @@ export function Advantages() {
 							<h5 class="center">Lightning fast</h5>
 
 							<p class="light">
-								Aurum.js does not waste time deciding what needs to render, instead the library has been designed in a way that figuring out
-								what needs to be rendered is almost free, giving you near native performance without the hassle of manual dom updates
+								Faster than react, faster than angular, Aurum.js does not waste time deciding what needs to render. The library has been
+								designed in a way that figuring out what needs to be rendered is almost free, giving you massive performance without without
+								sacrifycing power. Not convinced? See how blazingly fast you can navigate around this very website!
 							</p>
 						</div>
 					</div>

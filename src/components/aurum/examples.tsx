@@ -8,7 +8,7 @@ export interface ExampleModel {
 	code: DataSource<string>;
 }
 
-const exampleData: ExampleModel[] = [
+export const exampleData: ExampleModel[] = [
 	{
 		title: 'Hello world',
 		description: `Basic Hello world example`,
@@ -205,29 +205,34 @@ function Evaluate(props: { dataSource: DataSource<string>; cancellationToken: Ca
 	async function renderCode(newCode: string) {
 		try {
 			const aurumAll = await import('aurumjs');
-			const code: string = Babel.transform('(() => {/** @jsx Aurum.Aurum.factory */	\n' + replaceImport(newCode) + '})()', {
+			const aurumCanvasAll = await import('aurum-canvas');
+			const code: string = Babel.transform('(() => {/** @jsx aurum.Aurum.factory */	\n' + replaceImport(newCode) + '})()', {
 				presets: ['es2015', 'react']
 			}).code;
-			return new Function('Aurum', 'return ' + code.substring(code.indexOf('(')))(aurumAll)();
+			return new Function('aurum', 'aurumCanvas', 'return ' + code.substring(code.indexOf('(')))(aurumAll, aurumCanvasAll)();
 		} catch (e) {
-			return <pre>{e.toString()}</pre>;
+			return <pre>{(e?.stack ?? e).toString()}</pre>;
 		}
 	}
 }
 
 function replaceImport(code: string): string {
-	return code.replace(/import\s*{(.*?)}\s*from\s'aurumjs'/g, (substring: string, ...args: any[]) => {
-		return `const {${args[0]}} = Aurum;`;
-	});
+	return code
+		.replace(/import\s*{(.*?)}\s*from\s'aurumjs'/g, (substring: string, ...args: any[]) => {
+			return `const {${args[0]}} = aurum;`;
+		})
+		.replace(/import\s*{(.*?)}\s*from\s'aurum-canvas'/g, (substring: string, ...args: any[]) => {
+			return `const {${args[0]}} = aurumCanvas;`;
+		});
 }
 
-export function Examples() {
+export function Examples(props: { examples: ExampleModel[] }) {
 	const token = new CancellationToken();
 	return (
 		<div class="section">
 			<div class="row">
 				<ul>
-					{exampleData.map((data: ExampleModel) => (
+					{props.examples.map((data: ExampleModel) => (
 						<li class="row">
 							<div class="col s12 m3">
 								<h5>{data.title}</h5>
@@ -238,10 +243,13 @@ export function Examples() {
 									style="height:300px;border:1px solid #ccc"
 									onAttach={(d: HTMLDivElement) => {
 										r(['vs/editor/editor.main'], async function() {
-											const text = await (await fetch('data/aurum.d.ts')).text();
+											const aurumdTs = await (await fetch('data/aurum.d.ts')).text();
+											const aurumCanvasdTs = await (await fetch('data/aurum-canvas.d.ts')).text();
 
 											//@ts-ignore
-											monaco.languages.typescript.javascriptDefaults.addExtraLib([text].join('\n'), 'aurum.d.ts');
+											monaco.languages.typescript.javascriptDefaults.addExtraLib([aurumdTs].join('\n'), 'aurum.d.ts');
+											//@ts-ignore
+											monaco.languages.typescript.javascriptDefaults.addExtraLib([aurumCanvasdTs].join('\n'), 'aurum-canvas.d.ts');
 
 											//@ts-ignore
 											const editor = monaco.editor.create(d as HTMLDivElement, {

@@ -1,4 +1,4 @@
-import { Examples } from '../examples';
+import { exampleData, Examples } from '../examples';
 import { Aurum, AurumElement } from 'aurumjs';
 
 export function ExamplePage(): AurumElement {
@@ -6,7 +6,7 @@ export function ExamplePage(): AurumElement {
 		<div>
 			<h2>Examples</h2>
 			<br></br>
-			<Examples></Examples>
+			<Examples examples={exampleData}></Examples>
 		</div>
 	);
 }
