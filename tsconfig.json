@@ -5,6 +5,7 @@
         "module": "esnext",
         "target": "es2017",
         "jsxFactory": "Aurum.factory",
+        "jsxFragmentFactory": "Aurum.fragment",
         "jsx": "react",
         "moduleResolution": "node"
     },
